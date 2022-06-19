@@ -1,0 +1,42 @@
+{%extends 'index.html'%}
+
+{%block body%}
+<form action="" method="POST">
+    <div class="columns">
+        <div class="column is-9">
+            <input class="input" type="text" name="ticker" placeholder="Ticker(PNB.NS)" >
+        </div>
+        <div class="column is-3">
+            <button class="button is-primary">Search</button>
+        </div>
+    </div>
+</form>
+<div class="columns">
+    <div class="column"></div>
+    <div class="column"></div>
+    <div class="column">
+        <button class="button is-primary">Stats</button>
+
+    </div>
+</div>
+<div class="container" style="margin-top:10px;">
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidthle">
+        <thead>
+            <th>Info Name</th>
+            <th>Info Details</th>
+        </thead>
+        <tbody>
+            {% for i in info%}
+            <tr>
+                <td>
+                    {{i}}
+                </td>
+                <td>
+                    {{info[i]}}
+                </td>
+            </tr>
+            {%endfor%}
+        </tbody>
+    </table>
+</div>
+{%endblock%}
