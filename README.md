@@ -38,9 +38,6 @@ To get started with the Stock Market Analyzer, follow these simple steps:
 
 For a quick overview of the Stock Market Analyzer, check out the demo video below:
 
-[![Demo Video](images/main_image.png)](streamlit_video.mp4)
-
-
 Feel free to watch the video to see the application in action!
 
 ## **Key Features**
