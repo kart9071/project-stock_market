@@ -38,7 +38,13 @@ To get started with the Stock Market Analyzer, follow these simple steps:
 
 For a quick overview of the Stock Market Analyzer, check out the demo video below:
 
+
+https://github.com/kart9071/project-stock_market/assets/107675008/c0ea9e66-b408-49cd-8426-3486622bdaab
+
+
 Feel free to watch the video to see the application in action!
+
+
 
 ## **Key Features**
 
