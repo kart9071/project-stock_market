@@ -1,5 +1,3 @@
-#the link for all simplified ticker symbols
-
 from os import lstat
 import yfinance as yf
 import streamlit as st
@@ -9,91 +7,86 @@ import datetime
 import numpy as np
 from bs4 import BeautifulSoup
 import requests
-#from ta.volatility import BollingerBands
-#from ta.trend import MACD
-#from ta.momentum import RSIIndicator
 
+def fetch_stock_data(st_date, en_date, ticksym):
+    tickdata = yf.Ticker(ticksym)
+    tickdf = tickdata.history(period='1d', start=st_date, end=en_date)
+    return tickdf
 
+def scrape_logo_url(company_name):
+    url = f"https://www.google.com/search?q={company_name}+logo"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    response = requests.get(url, headers=headers)
+    soup = BeautifulSoup(response.content, "html.parser")
+    logo_url = soup.find("img")["src"]
+    return logo_url
 
-st.title("stock market app")
+def get_company_info(ticksym):
+    tickdata = yf.Ticker(ticksym)
+    company_name = tickdata.info.get('longName', '')
+    print(company_name)
+    if company_name:
+        logo_url = scrape_logo_url(company_name)
+        tickdata.info['logo_url'] = logo_url
+        print(logo_url)
+    return tickdata.info
 
+def display_logo(company_info):
+    str_logo = company_info.get('logo_url', '')
+    if str_logo:
+        str_logo = f'<img src="{str_logo}" width="200">'
+    else:
+        str_logo = 'No logo available'
+    return str_logo
 
-st.markdown('''
-a stock market trend analysis 
-''')
-#st.markdown('HELLO THIS IS SOMETHING TO DO IN THE MARKET WEBSITE')
-st.write("------------------------------------")
-st.sidebar.subheader('parameters')
-st_date = st.sidebar.date_input("start date", datetime.date(2020, 1, 1))
-en_date = st.sidebar.date_input("end date", datetime.date(2022, 1, 31))
+def main():
+    st.title("Stock Market App")
 
-tick_lst = pd.read_csv('https://raw.githubusercontent.com/dataprofessor/s-and-p-500-companies/master/data/constituents_symbols.txt')
-ticksym = st.sidebar.selectbox('stock ticker', tick_lst)
-tickdata = yf.Ticker(ticksym)
-tickdf = tickdata.history(period = '1d', start = st_date, end = en_date)
+    st.markdown('''
+    A stock market trend analysis 
+    ''')
 
+    st.write("------------------------------------")
+    st.sidebar.subheader('Parameters')
+    st_date = st.sidebar.date_input("Start Date", datetime.date(2024,1,1))
+    en_date = st.sidebar.date_input("End Date", datetime.date(2024, 4, 4))
 
+    tick_lst = pd.read_csv('../streamlit_app/textFile/tickerList.txt')
+    ticksym = st.sidebar.selectbox('Stock Ticker', tick_lst)
 
+    company_info = get_company_info(ticksym)
 
-url = "https://financialmodelingprep.com/financial-summary/" + ticksym
-request = requests.get(url)
+    str_logo = display_logo(company_info)
+    # st.markdown(str_logo, unsafe_allow_html=True)
 
-ticksym4 = st.sidebar.selectbox('choose the stock to compare with', tick_lst)
-tickdata2 = yf.Ticker(ticksym4)
-tickdf3 = tickdata2.history(period = '1d', start = st_date, end = en_date)
+    strname = company_info['longName']
+    st.header('**%s**' % strname)
 
-str_logo = '<img src = %s>' % tickdata.info['logo_url']
-st.markdown(str_logo, unsafe_allow_html=True)
+    strsum = company_info['longBusinessSummary']
+    st.info(strsum)
 
-strname = tickdata.info['longName']
-st.header('**%s**' % strname)
+    tickdf = fetch_stock_data(st_date, en_date, ticksym)
 
-strsum = tickdata.info['longBusinessSummary']
-st.info(strsum)
+    st.header('**Ticker Data**')
+    st.write(tickdf)
 
-st.header('**ticker data**')
-st.write(tickdf)
-
-st.header('**bollinger bands**')
-qf = cf.QuantFig(tickdf, title = 'figure', legend = 'top', name = 'gs')
-qf.add_bollinger_bands()
-fig = qf.iplot(asFigure = True)
-st.plotly_chart(fig)
-
-
-
-
-if(st.sidebar.button("COMPARISON")):
-    st.header(ticksym4)
-    qf = cf.QuantFig(tickdf3, title = 'figure', legend = 'top', name = 'gs')
+    st.header('**Bollinger Bands**')
+    qf = cf.QuantFig(tickdf, title='Figure', legend='top', name='gs')
     qf.add_bollinger_bands()
-    fig = qf.iplot(asFigure = True)
+    fig = qf.iplot(asFigure=True)
     st.plotly_chart(fig)
-    
-    
-    
-if(st.sidebar.button("stock analyser")):
-    st.write(ticksym)
-    stock = yf.Ticker(ticksym)
-    tick_data4 = stock.history(period = '1d')
-    prices = tick_data4['Close']
-    volumes = tick_data4['Volume']
-    
-    #last_price = tick_data4['Last Price']
 
-    lower = prices.min()
-    upper = prices.max()
-    st.write(prices)
-    st.write(volumes)
-    
-    #st.write(stock.sustainability)
-    st.write(stock.analysis)
-    st.write(stock.actions)
-    st.write(stock.cashflow)
-    st.write(stock.major_holders)
-    #st.write(stock.news)
-    
-    #st.write(last_price)
+    if st.sidebar.button("Comparison"):
+        st.header("Comparison with another stock")
+        # Add comparison functionality here
 
-if(st.sidebar.button("action on the stock")):
-    pass
+    if st.sidebar.button("Stock Analyzer"):
+        st.header("Stock Analyzer")
+        # Add stock analyzer functionality here
+
+    if st.sidebar.button("Action on the Stock"):
+        st.header("Action on the Stock")
+        # Add action on the stock functionality here
+
+if __name__ == "__main__":
+    main()
