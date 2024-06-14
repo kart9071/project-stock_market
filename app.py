@@ -11,12 +11,8 @@ def run_streamlit_app():
 @app.route('/')
 def index():
     run_streamlit_app()
-    return render_template('index.html')
-
-@app.route('/streamlit')
-def streamlit_redirect():
-    # Assuming the Streamlit app runs on localhost:8501 by default
     return redirect("http://localhost:8501")
+
 
 # Route for other pages
 @app.route('/hello')
