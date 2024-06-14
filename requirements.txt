@@ -1,1 +1,9 @@
+yfinance
+streamlit
+pandas
+cufflinks
+numpy
+beautifulsoup4
+requests
+Flask
 gunicorn
