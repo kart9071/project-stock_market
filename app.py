@@ -10,8 +10,7 @@ def run_streamlit_app():
 # Route to start and embed Streamlit app
 @app.route('/')
 def streamlit():
-    run_streamlit_app()  # Start Streamlit app
-    return "Your application is running"
+    subprocess.Popen(["streamlit", "run", "streamlit_app/stockapp.py"]) # Start Streamlit app
 
 # Route for other pages
 @app.route('/hello')
