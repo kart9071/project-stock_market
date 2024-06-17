@@ -51,7 +51,7 @@ def main():
     st_date = st.sidebar.date_input("Start Date", datetime.date(2024,1,1))
     en_date = st.sidebar.date_input("End Date", datetime.date(2024, 4, 4))
 
-    tick_lst = pd.read_csv('streamlit_app/textFile/tickerList.txt')
+    tick_lst = pd.read_csv('tickerList.txt')
     ticksym = st.sidebar.selectbox('Stock Ticker', tick_lst)
 
     company_info = get_company_info(ticksym)
